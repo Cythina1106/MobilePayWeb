@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mobile-pay-web:
+    build: .
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    container_name: mobile-pay-web
+    
+  # 如果需要 HTTPS，可以添加 nginx-proxy
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./ssl:/etc/nginx/ssl
+      - ./nginx-ssl.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - mobile-pay-web
+    restart: unless-stopped
+    container_name: nginx-proxy
