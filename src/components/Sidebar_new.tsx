@@ -16,8 +16,8 @@ const Sidebar = ({ activePage, onPageChange, collapsed, onToggleCollapse, userPe
     { id: 'userCenter', label: '用户中心', icon: '👥', permission: 'users' },
     { id: 'discount', label: '折扣策略管理', icon: '🎫', permission: 'settings' },
     { id: 'gateSystem', label: '闸机系统', icon: '🚪', permission: 'settings' },
-    { id: 'permissions', label: '权限管理', icon: '🔐', permission: 'permissions' },
-    { id: 'settings', label: '系统设置', icon: '⚙️', permission: 'settings' },
+    // { id: 'permissions', label: '权限管理', icon: '🔐', permission: 'permissions' },
+    // { id: 'settings', label: '系统设置', icon: '⚙️', permission: 'settings' },
   ]
 
   // 过滤用户有权限的菜单项

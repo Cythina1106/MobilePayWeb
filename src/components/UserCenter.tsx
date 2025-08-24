@@ -462,9 +462,9 @@ const UserCenter = () => {
             <option value="REJECTED">已拒绝</option>
             <option value="DISABLED">已禁用</option>
           </select>
-          <button className="add-btn" onClick={() => setShowUserModal(true)}>
+          {/* <button className="add-btn" onClick={() => setShowUserModal(true)}>
             <span>+</span> 添加用户
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -543,13 +543,13 @@ const UserCenter = () => {
             </div>
             
             <div className="user-actions">
-              <button
+              {/* <button
                 className="action-btn edit"
                 onClick={() => handleUserEdit(user)}
                 disabled={loading}
               >
                 编辑
-              </button>
+              </button> */}
               {user.status === 'APPROVED' ? (
                 <button
                   className="action-btn suspend"
