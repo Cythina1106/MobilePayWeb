@@ -85,19 +85,74 @@ npm run preview
 ## 📝 项目结构
 
 ```
-src/
-├── components/          # 组件目录
-│   ├── Sidebar.tsx     # 侧边栏组件
-│   ├── Dashboard.tsx   # 仪表盘组件
-│   ├── TransactionList.tsx # 交易管理组件
-│   ├── UserManagement.tsx  # 用户管理组件
-│   ├── Settings.tsx    # 设置组件
-│   └── *.css          # 对应的样式文件
-├── App.tsx            # 主应用组件
-├── App.css            # 主样式文件
-├── main.tsx           # 应用入口
-├── index.css          # 全局样式
-└── vite-env.d.ts      # Vite 类型声明
+mobilePayWeb/
+├── public/                    # 静态资源目录
+│   └── vite.svg              # Vite 图标
+├── src/                      # 源代码目录
+│   ├── components/           # 组件目录
+│   │   ├── Dashboard.tsx     # 仪表盘组件
+│   │   ├── Dashboard.css     # 仪表盘样式
+│   │   ├── DeviceManagement.tsx # 设备管理组件
+│   │   ├── DiscountStrategy.tsx # 折扣策略组件
+│   │   ├── DiscountStrategy.css # 折扣策略样式
+│   │   ├── GateManagement.tsx   # 门禁管理组件
+│   │   ├── GateManagement.css   # 门禁管理样式
+│   │   ├── GateSystem.tsx       # 门禁系统组件
+│   │   ├── GateSystem.css       # 门禁系统样式
+│   │   ├── Login.tsx            # 登录组件
+│   │   ├── Login.css            # 登录样式
+│   │   ├── PaymentMethods.tsx   # 支付方式组件
+│   │   ├── PaymentMethods.css   # 支付方式样式
+│   │   ├── PermissionManagement.tsx # 权限管理组件
+│   │   ├── PermissionManagement.css # 权限管理样式
+│   │   ├── QRCodeScanner.tsx    # 二维码扫描组件
+│   │   ├── QRCodeScanner.css    # 二维码扫描样式
+│   │   ├── Settings.tsx         # 设置组件
+│   │   ├── Settings.css         # 设置样式
+│   │   ├── Sidebar.tsx          # 侧边栏组件
+│   │   ├── Sidebar.css          # 侧边栏样式
+│   │   ├── Sidebar_fixed.tsx    # 固定侧边栏组件
+│   │   ├── Sidebar_new.tsx      # 新版侧边栏组件
+│   │   ├── SiteManagement.tsx   # 站点管理组件
+│   │   ├── SiteManagement.css   # 站点管理样式
+│   │   ├── TransactionList.tsx  # 交易列表组件
+│   │   ├── TransactionList.css  # 交易列表样式
+│   │   ├── UserCenter.tsx       # 用户中心组件
+│   │   ├── UserCenter.css       # 用户中心样式
+│   │   ├── UserInfoManagement.tsx # 用户信息管理组件
+│   │   ├── UserInfoManagement.css # 用户信息管理样式
+│   │   ├── UserManagement.tsx   # 用户管理组件
+│   │   └── UserManagement.css   # 用户管理样式
+│   ├── hooks/                # 自定义 Hooks
+│   │   └── useApi.ts         # API 钩子
+│   ├── services/             # 服务层
+│   │   ├── api.ts           # API 服务
+│   │   └── mockApi.ts       # 模拟 API 服务
+│   ├── types/               # 类型定义
+│   │   └── api.ts          # API 类型定义
+│   ├── utils/               # 工具函数
+│   │   └── apiClient.ts    # API 客户端
+│   ├── examples/            # 示例代码
+│   ├── pages/               # 页面组件
+│   ├── App.tsx             # 主应用组件
+│   ├── App.css             # 主应用样式
+│   ├── main.tsx            # 应用入口
+│   ├── index.css           # 全局样式
+│   └── vite-env.d.ts       # Vite 类型声明
+├── china-cities-complete.json # 中国城市数据
+├── eslint.config.js        # ESLint 配置
+├── index.html              # HTML 模板
+├── package.json            # 项目依赖和脚本
+├── tsconfig.json           # TypeScript 配置
+├── tsconfig.node.json      # Node.js TypeScript 配置
+├── vite.config.ts          # Vite 配置
+├── Dockerfile              # Docker 镜像配置
+├── docker-compose.yml      # Docker Compose 配置
+├── nginx.conf              # Nginx 配置
+├── deploy.sh               # Linux 部署脚本
+├── deploy.bat              # Windows 部署脚本
+├── DEPLOY.md               # 部署文档
+└── README.md               # 项目说明文档
 ```
 
 ## 🔐 功能权限
