@@ -1,0 +1,121 @@
+
+:root {
+  --sidebar-bg: #ffffff;
+}
+
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: #ffffff; /* 整个侧边栏背景白色 */
+  color: #000000;      /* 黑色字体 */
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+  z-index: 1000;
+  border-right: 1px solid #f1f3f4;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+  color: #000000; /* logo 图标黑色 */
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000000; /* logo 文字黑色 */
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  color: #000000;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.collapse-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #000000; /* 黑色文字 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  border-left: 3px solid transparent;
+  border-radius: 6px; /* 增加圆角，让 hover 更像按钮 */
+}
+
+.nav-item:hover {
+  background: #f0f0f0; /* hover 时浅灰色背景 */
+  color: #000000;
+}
+
+.nav-item.active {
+  background: #e0e0e0; /* 激活时更深一点灰 */
+  color: #000000;
+  border-left-color: #000000; /* 激活时左边框黑色 */
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 1.2rem;
+  color: #000000; /* 图标黑色 */
+}
+
+.nav-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #000000;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.sidebar.collapsed .nav-label {
+  display: none;
+}
+
+
+
+

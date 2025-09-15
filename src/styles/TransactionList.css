@@ -1,0 +1,332 @@
+.transaction-list {
+  padding: 2rem;
+}
+
+.transaction-header {
+  margin-bottom: 2rem;
+}
+
+.transaction-header h2 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.transaction-header p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.filters-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.search-filters {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 2px solid #e1e4e8;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.search-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7f8c8d;
+}
+
+.filter-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e1e4e8;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.export-btn {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.export-btn:hover {
+  transform: translateY(-1px);
+}
+
+.transaction-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e1e4e8;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  color: #7f8c8d;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stat-value.success {
+  color: #27ae60;
+}
+
+.stat-value.failed {
+  color: #e74c3c;
+}
+
+.stat-value.pending {
+  color: #f39c12;
+}
+
+.transaction-table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transaction-table th {
+  background: #f8f9fa;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.transaction-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+  vertical-align: middle;
+}
+
+.transaction-table tr:hover {
+  background: #f8f9fa;
+}
+
+.transaction-id,
+.order-id {
+  color: #3498db;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.amount {
+  font-weight: 600;
+  color: #27ae60;
+}
+
+.payment-method {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.payment-method.余额支付 {
+  background: rgba(22, 119, 255, 0.1);
+  color: #1677ff;
+}
+
+.payment-method.银行卡支付 {
+  background: rgba(138, 43, 226, 0.1);
+  color: #8a2be2;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status.成功 {
+  color: #27ae60;
+}
+
+.status.成功 .status-dot {
+  background: #27ae60;
+}
+
+.status.处理中 {
+  color: #f39c12;
+}
+
+.status.处理中 .status-dot {
+  background: #f39c12;
+}
+
+.status.失败 {
+  color: #e74c3c;
+}
+
+.status.失败 .status-dot {
+  background: #e74c3c;
+}
+
+.status.已退款 {
+  color: #9b59b6;
+}
+
+.status.已退款 .status-dot {
+  background: #9b59b6;
+}
+
+.time-info {
+  font-size: 0.9rem;
+}
+
+.time {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.25rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn.view {
+  background: #3498db;
+  color: white;
+}
+
+.action-btn.view:hover {
+  background: #2980b9;
+}
+
+.action-btn.refund {
+  background: #e74c3c;
+  color: white;
+}
+
+.action-btn.refund:hover {
+  background: #c0392b;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.page-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ecf0f1;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.page-info {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1200px) {
+  .transaction-table {
+    font-size: 0.8rem;
+  }
+  
+  .transaction-table th,
+  .transaction-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .transaction-list {
+    padding: 1rem;
+  }
+  
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-filters {
+    flex-direction: column;
+  }
+  
+  .transaction-table-container {
+    overflow-x: auto;
+  }
+  
+  .transaction-table {
+    min-width: 800px;
+  }
+}

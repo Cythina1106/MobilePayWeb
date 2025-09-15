@@ -1,0 +1,997 @@
+/* 闸机设备管理样式 */
+.gate-management {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.management-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.management-header h2 {
+  color: #1a202c;
+  margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.management-header p {
+  color: #718096;
+  font-size: 16px;
+}
+
+/* 标签页样式 */
+.management-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 30px;
+  background: #f8f9fa;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #6c757d;
+  position: relative;
+}
+
+.tab-btn:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.tab-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+/* 通用区域头部样式 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.section-header h3 {
+  color: #1a202c;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 280px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.create-btn, .export-btn {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.create-btn:hover, .export-btn:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.export-btn {
+  background: #28a745;
+}
+
+.export-btn:hover {
+  background: #1e7e34;
+}
+
+/* 站点管理样式 */
+.stations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.station-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.station-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.station-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.station-info h4 {
+  color: #1a202c;
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.station-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.station-code {
+  background: #007bff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.station-line {
+  background: #28a745;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status.maintenance {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.station-details {
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.detail-item .label {
+  color: #6c757d;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.detail-item .value {
+  color: #1a202c;
+  font-weight: 500;
+}
+
+.station-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.action-btn.edit {
+  background: #ffc107;
+  color: #212529;
+}
+
+.action-btn.edit:hover {
+  background: #e0a800;
+}
+
+.action-btn.delete {
+  background: #dc3545;
+  color: white;
+}
+
+.action-btn.delete:hover {
+  background: #c82333;
+}
+
+.action-btn.suspend {
+  background: #fd7e14;
+  color: white;
+}
+
+.action-btn.suspend:hover {
+  background: #e8590c;
+}
+
+.action-btn.activate {
+  background: #28a745;
+  color: white;
+}
+
+.action-btn.activate:hover {
+  background: #1e7e34;
+}
+
+/* 表格样式 */
+.gates-table-container,
+.users-table-container,
+.records-table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gates-table,
+.users-table,
+.records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.gates-table th,
+.users-table th,
+.records-table th {
+  background: #f8f9fa;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.gates-table td,
+.users-table td,
+.records-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f1f3f4;
+  color: #1a202c;
+}
+
+.gates-table tr:hover,
+.users-table tr:hover,
+.records-table tr:hover {
+  background: #f8f9fa;
+}
+
+/* 闸机特定样式 */
+.gate-number {
+  font-weight: 600;
+  color: #007bff;
+  font-family: monospace;
+}
+
+.gate-type {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.gate-type.entry {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.gate-type.exit {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.gate-type.bidirectional {
+  background: #d4edda;
+  color: #155724;
+}
+
+.gate-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.gate-status.online {
+  background: #d4edda;
+  color: #155724;
+}
+
+.gate-status.offline {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.gate-status.error {
+  background: #f5c6cb;
+  color: #721c24;
+}
+
+.gate-status.maintenance {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.device-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.device-info span {
+  font-weight: 500;
+}
+
+.device-info small {
+  color: #6c757d;
+  font-size: 11px;
+}
+
+.error-count {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.error-count.low {
+  background: #d4edda;
+  color: #155724;
+}
+
+.error-count.medium {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.error-count.high {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.gate-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 用户特定样式 */
+.card-number {
+  font-family: monospace;
+  font-weight: 600;
+  color: #007bff;
+  font-size: 13px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #1a202c;
+}
+
+.user-type {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.user-type.regular {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.user-type.student {
+  background: #cce5ff;
+  color: #0066cc;
+}
+
+.user-type.senior {
+  background: #ffe6cc;
+  color: #cc6600;
+}
+
+.user-type.staff {
+  background: #e6f3ff;
+  color: #0080ff;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.user-status.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.user-status.suspended {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.user-status.expired {
+  background: #f1f3f4;
+  color: #495057;
+}
+
+.balance {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.balance.low {
+  color: #dc3545;
+}
+
+.user-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 出行记录特定样式 */
+.fare {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.payment-method {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.payment-method.balance {
+  background: #cce5ff;
+  color: #0066cc;
+}
+
+.payment-method.mobile {
+  background: #d4edda;
+  color: #155724;
+}
+
+.payment-method.card {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.trip-status {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.trip-status.completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.trip-status.entry_only {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.trip-status.exit_only {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* 模态框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1a202c;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #495057;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.form-container {
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  color: #495057;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.cancel-btn {
+  padding: 10px 20px;
+  background: #f8f9fa;
+  color: #495057;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.save-btn {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+  background: #0056b3;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .gate-management {
+    padding: 15px;
+  }
+  
+  .management-tabs {
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .tab-btn {
+    text-align: center;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+  
+  .stations-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gates-table-container,
+  .users-table-container,
+  .records-table-container {
+    overflow-x: auto;
+  }
+  
+  .gates-table,
+  .users-table,
+  .records-table {
+    min-width: 800px;
+  }
+  
+  .modal-content {
+    margin: 10px;
+    max-width: none;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .gate-management {
+    padding: 10px;
+  }
+  
+  .management-header h2 {
+    font-size: 24px;
+  }
+  
+  .station-card {
+    padding: 15px;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 15px;
+  }
+}
+
+/* 筛选区域样式 */
+.filter-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.filter-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.filter-select,
+.page-size-select {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.reset-filters-btn {
+  padding: 8px 16px;
+  border: 1px solid #6c757d;
+  border-radius: 6px;
+  background: white;
+  color: #6c757d;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-filters-btn:hover {
+  background: #6c757d;
+  color: white;
+}
+
+.filter-select:focus,
+.page-size-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.results-info {
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 分页样式 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  padding: 20px 0;
+}
+
+.page-btn {
+  padding: 8px 16px;
+  border: 1px solid #dee2e6;
+  background: white;
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.page-btn:disabled {
+  background: #f8f9fa;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 4px;
+}
+
+.page-number {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dee2e6;
+  background: white;
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.page-number:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.page-number.active {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.page-info {
+  margin-left: 16px;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* 站点卡片中的城市标签 */
+.station-city {
+  background: #28a745;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-select,
+  .page-size-select {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .page-numbers {
+    flex-wrap: wrap;
+  }
+  
+  .page-info {
+    margin-left: 0;
+    margin-top: 8px;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+/* 地址选择器相关样式 */
+.form-group select:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #e9ecef;
+}
+
+.form-group input[readonly] {
+  background-color: #f5f5f5;
+  cursor: default;
+  border-color: #e9ecef;
+}
+
+/* 地址选择器布局优化 */
+.address-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.address-selection .form-group {
+  margin-bottom: 0;
+}
+
+/* 地址选择器标签样式 */
+.address-selection .form-group label {
+  position: relative;
+}
+
+.address-selection .form-group label::after {
+  content: ' *';
+  color: #dc3545;
+  font-weight: normal;
+}
+
+.address-selection .form-group:nth-child(2) label::after {
+  display: none; /* 省份字段自动填充，不显示必填星号 */
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .address-selection {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
