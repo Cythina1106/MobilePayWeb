@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { siteApi, deviceApi } from '../services/api.ts';
+import { siteApi, discountApi, deviceApi } from '../services/api'
 import {
   City,
   Site,
@@ -19,8 +19,8 @@ import {
   GateListResponse,
   GateCreateRequest,
   GateUpdateRequest
-} from '../types/api.ts'
-import '../styles/GateSystem.css'
+} from '../types/api'
+import './GateSystem.css'
 
 interface Station {
   id: string
@@ -100,8 +100,8 @@ const GateSystem = () => {
     status: '',
     siteType: '',
     city: '',
-    orderBy: 'created_time',
-    orderDirection: 'desc'
+    orderBy: 'createdTime',
+    orderDirection: 'DESC'
   })
   const [siteListResponse, setSiteListResponse] = useState<SiteListResponse | null>(null)
   const [lines, setLines] = useState<Line[]>([])
@@ -175,10 +175,10 @@ const GateSystem = () => {
     pageNum: 1,
     pageSize: 10,
     keyword: '',
-    deviceType: '',
+    deviceType: '', // 对应 device_type
     status: '',
-    siteId: '',
-    orderBy: 'created_time',
+    siteId: '', // 对应 site_id
+    orderBy: 'createdTime',
     orderDirection: 'desc'
   })
   const [selectedSiteForGates, setSelectedSiteForGates] = useState<string>('')
@@ -196,7 +196,7 @@ const GateSystem = () => {
   }
 
   // 将API返回的Site数据转换为Station格式
-  const convertSiteToStation = (site: Site): Station => {
+  const convertSiteToStation = (site: any): Station => {
     return {
       id: site.siteId?.toString() || '',
       name: site.siteName || '未知站点',
@@ -249,7 +249,7 @@ const GateSystem = () => {
           contactPerson: response.data.contactPerson || '',
           contactPhone: response.data.contactPhone || '',
           siteType: (response.data.siteType as 'BRANCH' | 'HQ' | 'TERMINAL' | 'STATION' | 'DEPOT' | 'OFFICE') || 'BRANCH',
-          description: '',
+          description: (response.data as any).description || '',
           longitude: response.data.longitude || 0,
           latitude: response.data.latitude || 0,
           city: response.data.city,
@@ -296,50 +296,42 @@ const GateSystem = () => {
 
   // 打开编辑闸机模态框
   const openEditGateModal = async (gate: Gate) => {
-    console.log('gate===>', gate)
     setGateFormLoading(true)
     setApiError('') // 清空之前的错误信息
     try {
-      // 尝试从多个可能的字段获取设备ID
-      const deviceId = gate.id || (gate as any).deviceId || (gate as any).device_id
-      console.log('🔍 获取闸机详情...', 'deviceId:', deviceId, 'gate.id:', gate.id)
-
-      if (!deviceId) {
-        throw new Error('无法获取设备ID')
-      }
-
-      const response = await deviceApi.getDevice(deviceId)
+      console.log('🔍 获取闸机详情...', gate.id)
+      const response = await deviceApi.getDevice(gate.id)
       console.log('📋 闸机详情API响应:', response)
 
       if (response.success && response.data) {
         // 将 Device 转换为 Gate 格式
         const gateData: Gate = {
           ...response.data,
-          id: (response.data as any).deviceId?.toString() || (response.data as any).device_id?.toString() || deviceId, // 确保使用正确的设备ID
+          id: (response.data as any).deviceId?.toString() || gate.id, // 确保使用正确的设备ID
           stationId: response.data.siteId,
-          name: response.data.deviceName || response.data.device_name || '',
+          name: response.data.deviceName,
           type: 'bidirectional' as const,
-          status: ((response.data as any).status === 'ACTIVE'  ? 'online' :
-                  (response.data as any).status === 'ONLINE'  ? 'online' :
+          status: ((response.data as any).status === 'ACTIVE'  ? 'online' : 
+                  (response.data as any).status === 'ONLINE'  ? 'online' : 
                   (response.data as any).status === 'INACTIVE' ? 'offline' :
                   (response.data as any).status === 'MAINTENANCE' ? 'maintenance' : 'offline') as 'online' | 'offline' | 'maintenance',
           location: response.data.location || '',
-          deviceModel: response.data.deviceType || response.data.device_type || '',
-          installDate: response.data.createdTime?.split('T')[0] || response.data.created_time?.split('T')[0] || '',
-          lastMaintenance: response.data.updatedTime?.split('T')[0] || response.data.updated_time?.split('T')[0] || '',
+          deviceModel: response.data.deviceModel,
+          installDate: response.data.createdTime?.split('T')[0] || '',
+          lastMaintenance: response.data.updatedTime?.split('T')[0] || '',
           scanCount: 0,
           errorCount: 0
         }
         setEditingGate(gateData)
         setGateFormData({
-          deviceName: response.data.deviceName || response.data.device_name,
-          deviceCode: response.data.deviceCode || response.data.device_code,
-          deviceType: response.data.deviceType || response.data.device_type,
-          siteId: response.data.siteId?.toString() || '', // 确保是字符串类型
-          firmwareVersion: response.data.firmwareVersion || response.data.firmware_version,
+          deviceName: response.data.deviceName,
+          deviceCode: response.data.deviceCode,
+          deviceType: response.data.deviceType,
+          siteId: (response.data as any).siteId?.toString() || '', // 确保是字符串类型
+          firmwareVersion: response.data.firmwareVersion,
           description: response.data.description || '',
-          ipAddress: response.data.ipAddress || response.data.ip_address || '',
-          macAddress: response.data.macAddress || response.data.mac_address || '',
+          ipAddress: response.data.ipAddress || '',
+          macAddress: response.data.macAddress || '',
           location: response.data.location || ''
         })
         setShowGateModal(true)
@@ -479,7 +471,7 @@ const GateSystem = () => {
       if (editingSite) {
         // 编辑站点 - 构建符合API要求的数据格式
         const updateData: SiteUpdateRequest = {
-          id: editingSite.siteId?.toString() || editingSite.id || '',
+          id: (editingSite as any).siteId?.toString() || editingSite.id,
           siteName: siteFormData.siteName,
           siteCode: siteFormData.siteCode,
           siteAddress: siteFormData.siteAddress,
@@ -494,8 +486,8 @@ const GateSystem = () => {
           businessStartTime: siteFormData.businessStartTime,
           businessEndTime: siteFormData.businessEndTime
         }
-        console.log('更新站点...', editingSite.siteId, updateData)
-        response = await siteApi.updateSite(editingSite.siteId?.toString() || editingSite.id || '', updateData)
+        console.log('更新站点...', (editingSite as any).siteId, updateData)
+        response = await siteApi.updateSite((editingSite as any).siteId?.toString() || editingSite.id, updateData)
         console.log('更新站点API响应:', response)
       } else {
         // 新增站点 - 构建符合API要求的数据格式
@@ -688,8 +680,20 @@ const GateSystem = () => {
       const response = await siteApi.getSites(query)
 
       if (response.success && response.data) {
-        // 直接使用后端返回的数据格式
-        setSiteListResponse(response.data)
+        // 适配后端返回的数据格式
+        const adaptedData: SiteListResponse = {
+          records: response.data.records || [],
+          total: response.data.total || 0,
+          size: response.data.size || query.pageSize || 10,
+          current: response.data.current || query.pageNum || 1,
+          pages: response.data.pages || 1,
+          // 向后兼容的字段映射
+          sites: response.data.records || [],
+          pageNum: response.data.current || query.pageNum || 1,
+          pageSize: response.data.size || query.pageSize || 10,
+          totalPages: response.data.pages || 1
+        }
+        setSiteListResponse(adaptedData)
         setSites(response.data.records || [])
 
         // 将Site数据转换为Station格式
@@ -744,9 +748,9 @@ const GateSystem = () => {
         pageNum: query.pageNum,
         pageSize: query.pageSize,
         keyword: query.keyword,
-        siteId: query.siteId,
+        siteId: query.siteId, // 映射 siteId 到 site_id
         status: query.status,
-        deviceType: query.deviceType,
+        deviceType: query.deviceType, // 映射 deviceType 到 device_type
         orderBy: query.orderBy,
         orderDirection: query.orderDirection
       }
@@ -771,14 +775,12 @@ const GateSystem = () => {
         setGateListResponse(adaptedData)
 
         // 将 Device 数据转换为 Gate 格式
-        const gateData = (apiData.records || []).map((device: any) => {
-          console.log('设备原始数据:', device)
-          const mappedDevice = {
-            ...device,
-            // 为了兼容现有的 Gate 接口，添加必要的字段映射
-            id: (device.deviceId || device.device_id || device.id)?.toString(), // 支持多种ID字段格式，确保为字符串
-          stationId: device.siteId || device.site_id,
-          name: device.deviceName || device.device_name,
+        const gateData = (apiData.records || []).map((device: any) => ({
+          ...device,
+          // 为了兼容现有的 Gate 接口，添加必要的字段映射
+          id: device.deviceId, // 添加id字段
+          stationId: device.siteId,
+          name: device.deviceName,
           type: 'bidirectional' as const, // 默认类型
           status: (device.status === 'ACTIVE' ? 'online' :
                   device.status === 'ONLINE' ? 'online' :
@@ -786,15 +788,12 @@ const GateSystem = () => {
                   device.status === 'MAINTENANCE' ? 'maintenance' :
                   device.status === 'FAULT' ? 'offline' : 'offline') as 'online' | 'offline' | 'maintenance',
           location: device.location || '', // 确保 location 不为 undefined
-          deviceModel: device.deviceType || device.device_type || '',
-          installDate: device.createdTime?.split('T')[0] || device.created_time?.split('T')[0] || '',
-          lastMaintenance: device.updatedTime?.split('T')[0] || device.updated_time?.split('T')[0] || '',
+          deviceModel: device.deviceType,
+          installDate: device.createdTime?.split('T')[0] || '',
+          lastMaintenance: device.updatedTime?.split('T')[0] || '',
           scanCount: 0, // API中没有此字段，设为默认值
           errorCount: 0 // API中没有此字段，设为默认值
-          }
-          console.log('转换后的设备数据:', mappedDevice)
-          return mappedDevice
-        })
+        }))
         setGates(gateData)
 
         console.log('✅ 闸机列表获取成功:', response)
@@ -848,7 +847,7 @@ const GateSystem = () => {
 
     console.log(
       isInitial ? '🚀 初始化闸机数据' :
-      forceRefresh ? '强制刷新闸机数据' :
+      forceRefresh ? '🔄 强制刷新闸机数据' :
       '🔄 闸机查询参数变化，刷新数据',
       query
     )
@@ -990,28 +989,28 @@ const GateSystem = () => {
     // 模拟扫码过程
     setTimeout(() => {
       const randomCard = mockUserData[Math.floor(Math.random() * mockUserData.length)]
-
+      
       // 模拟各种异常情况
       const random = Math.random()
-
+      
       if (random < 0.1) {
         setScanError('二维码识别失败，请重新扫描')
         setIsScanning(false)
         return
       }
-
+      
       if (random < 0.2) {
         setScanError('卡片已过期，请及时续费')
         setIsScanning(false)
         return
       }
-
+      
       if (random < 0.3) {
         setScanError('账户余额不足，请充值后再试')
         setIsScanning(false)
         return
       }
-
+      
       if (random < 0.35) {
         setScanError('账户已被暂停，请联系客服')
         setIsScanning(false)
@@ -1033,7 +1032,7 @@ const GateSystem = () => {
     // 计算费用
     let fare = 0
     if (eventType === 'entry') {
-      fare = scanResult.userType === 'student' ? 1.50 :
+      fare = scanResult.userType === 'student' ? 1.50 : 
              scanResult.userType === 'senior' ? 1.00 : 3.00
     }
 
@@ -1061,7 +1060,7 @@ const GateSystem = () => {
     }
 
     setEvents(prev => [newEvent, ...prev])
-
+    
     // 更新扫码结果中的余额
     setScanResult(prev => prev ? {
       ...prev,
@@ -1134,7 +1133,7 @@ const GateSystem = () => {
           )}
           {gateQuery.siteId && (
             <span style={{ fontSize: '14px', color: '#007bff', fontWeight: 'normal', marginLeft: '10px' }}>
-              - 筛选站点: {sites.find((s: Site) => s.siteId?.toString() === gateQuery.siteId?.toString())?.siteName || '未知站点'}
+              - 筛选站点: {sites.find((s: any) => (s.site_id || s.id)?.toString() === gateQuery.siteId?.toString())?.site_name || '未知站点'}
             </span>
           )}
         </h3>
@@ -1175,8 +1174,8 @@ const GateSystem = () => {
             className="filter-select"
           >
             <option value="">全部状态</option>
-            <option value="ONLINE">在线</option>
-            <option value="OFFLINE">离线</option>
+            <option value="ACTIVE">在线</option>
+            <option value="INACTIVE">离线</option>
             <option value="MAINTENANCE">维护中</option>
             <option value="FAULT">故障</option>
           </select>
@@ -1189,8 +1188,8 @@ const GateSystem = () => {
             className="filter-select"
           >
             <option value="">全部站点</option>
-            {sites.map((site: Site) => (
-              <option key={site.siteId} value={site.siteId}>{site.siteName}</option>
+            {sites.map((site: any) => (
+              <option key={site.site_id || site.id} value={site.site_id || site.id}>{site.site_name}</option>
             ))}
           </select>
           {gateQuery.siteId && (
@@ -1220,13 +1219,13 @@ const GateSystem = () => {
           <button
             className="add-btn"
             onClick={() => {
-              console.log('手动刷新闸机列表')
+              console.log('🔄 手动刷新闸机列表')
               callGateApi(gateQuery, false, true) // 强制刷新
             }}
             style={{ marginLeft: '10px', backgroundColor: '#28a745' }}
             title="刷新闸机列表"
           >
-            刷新
+            🔄 刷新
           </button>
         </div>
       </div>
@@ -1254,8 +1253,8 @@ const GateSystem = () => {
               {/* 设备头部信息 */}
               <div className="device-header">
                 <div className="device-title">
-                  <h3>{(gate as any).deviceName || (gate as any).device_name || gate.name || '未知设备'}</h3>
-                  <span className="device-code">#{(gate as any).deviceCode || (gate as any).device_code || '未知代码'}</span>
+                  <h3>{(gate as any).device_name || gate.name || '未知设备'}</h3>
+                  <span className="device-code">#{(gate as any).device_code || '未知代码'}</span>
                 </div>
                 <div className="device-status">
                   <span className={`status-indicator ${gate.status?.toLowerCase()}`}>
@@ -1271,9 +1270,9 @@ const GateSystem = () => {
                 <div className="info-row">
                   <span className="info-label">设备类型</span>
                   <span className="info-value">
-                    {((gate as any).deviceType || (gate as any).device_type) === 'BOTH' ? '双向' :
-                     ((gate as any).deviceType || (gate as any).device_type) === 'ENTRY' ? '进站' :
-                     ((gate as any).deviceType || (gate as any).device_type) === 'EXIT' ? '出站' : '未知'}
+                    {(gate as any).device_type === 'BOTH' ? '双向' :
+                     (gate as any).device_type === 'ENTRY' ? '进站' :
+                     (gate as any).device_type === 'EXIT' ? '出站' : '未知'}
                   </span>
                 </div>
                 <div className="info-row">
@@ -1290,19 +1289,19 @@ const GateSystem = () => {
                 </div> */}
                 <div className="info-row">
                   <span className="info-label">最后维护</span>
-                  <span className="info-value">{(gate as any).updatedTime?.split('T')[0] || (gate as any).updated_time?.split('T')[0] || ''}</span>
+                  <span className="info-value">{(gate as any).updated_time?.split('T')[0] || ''}</span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">所属站点</span>
-                  <span className="info-value">{(gate as any).siteName || (gate as any).site_name || '未知站点'}</span>
+                  <span className="info-value">{(gate as any).site_name || '未知站点'}</span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">固件版本</span>
-                  <span className="info-value">{(gate as any).firmwareVersion || (gate as any).firmware_version || '未知'}</span>
+                  <span className="info-value">{(gate as any).firmware_version || '未知'}</span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">IP地址</span>
-                  <span className="info-value">{(gate as any).ipAddress || (gate as any).ip_address || '未设置'}</span>
+                  <span className="info-value">{(gate as any).ip_address || '未设置'}</span>
                 </div>
               </div>
 
@@ -1355,7 +1354,7 @@ const GateSystem = () => {
               cursor: (gateQuery.pageNum || 1) <= 1 ? 'not-allowed' : 'pointer'
             }}
           >
-            上一页
+            ⬅️ 上一页
           </button>
 
           <div style={{
@@ -1386,7 +1385,7 @@ const GateSystem = () => {
               cursor: (gateQuery.pageNum || 1) >= (gateListResponse.pages || gateListResponse.totalPages || 1) ? 'not-allowed' : 'pointer'
             }}
           >
-            下一页
+            下一页 ➡️
           </button>
 
           {/* 页面大小选择器 */}
@@ -1436,7 +1435,7 @@ const GateSystem = () => {
       if (response.success) {
         alert('闸机删除成功！')
         // 刷新列表
-        console.log('删除成功，刷新闸机列表...')
+        console.log('🔄 删除成功，刷新闸机列表...')
         callGateApi(gateQuery, false, true)
       } else {
         alert(`删除闸机失败: ${response.message}`)
@@ -1499,13 +1498,13 @@ const GateSystem = () => {
           <button
             className="add-btn"
             onClick={() => {
-              console.log('手动刷新站点列表')
+              console.log('🔄 手动刷新站点列表')
               callSiteApi(siteQuery, false, true) // 强制刷新
             }}
             style={{ marginLeft: '10px', backgroundColor: '#28a745' }}
             title="刷新站点列表"
           >
-            刷新
+            🔄 刷新
           </button>
         </div>
       </div>
@@ -1541,7 +1540,7 @@ const GateSystem = () => {
                  station.status === 'maintenance' ? '维护中' : '已关闭'}
               </div>
             </div>
-
+            
             {/* <div className="station-stats">
               <div className="stat-item">
                 <span className="stat-value">{station.gateCount}</span>
@@ -1552,7 +1551,7 @@ const GateSystem = () => {
                 <span className="stat-label">日均客流</span>
               </div>
             </div> */}
-
+            
             <div className="station-actions">
               <button
                 className="action-btn edit"
@@ -1564,9 +1563,9 @@ const GateSystem = () => {
               <button
                 className="action-btn view"
                 onClick={() => {
-                  // 从站点数据中获取正确的siteId
-                  const siteData = sites.find((s: Site) => s.siteId?.toString() === station.id)
-                  const siteId = siteData ? siteData.siteId?.toString() : station.id
+                  // 从站点数据中获取正确的site_id
+                  const siteData = sites.find((s: any) => (s.site_id || s.id)?.toString() === station.id)
+                  const siteId = siteData ? (siteData as any).site_id?.toString() || siteData.id : station.id
                   viewSiteGates(siteId)
                 }}
               >
@@ -1626,7 +1625,7 @@ const GateSystem = () => {
               cursor: siteQuery.pageNum <= 1 ? 'not-allowed' : 'pointer'
             }}
           >
-            上一页
+            ⬅️ 上一页
           </button>
 
           <div style={{
@@ -1658,7 +1657,7 @@ const GateSystem = () => {
               cursor: siteQuery.pageNum >= siteListResponse.pages ? 'not-allowed' : 'pointer'
             }}
           >
-            下一页 
+            下一页 ➡️
           </button>
 
           {/* 末页按钮 */}
@@ -1781,9 +1780,9 @@ const GateSystem = () => {
               )}
             </div>
           </div>
-
+          
           <div className="scanner-controls">
-            <button
+            <button 
               className="scan-btn"
               onClick={handleScan}
               disabled={isScanning || !activeGate}
@@ -1849,14 +1848,14 @@ const GateSystem = () => {
               </div>
 
               <div className="event-actions">
-                <button
+                <button 
                   className="event-btn entry"
                   onClick={() => handleStationEvent('entry')}
                   disabled={scanResult.status !== 'active'}
                 >
                   进站
                 </button>
-                <button
+                <button 
                   className="event-btn exit"
                   onClick={() => handleStationEvent('exit')}
                   disabled={scanResult.status !== 'active'}
@@ -1886,8 +1885,8 @@ const GateSystem = () => {
               className="search-input"
             />
           </div>
-          <select
-            value={statusFilter}
+          <select 
+            value={statusFilter} 
             onChange={(e) => setStatusFilter(e.target.value)}
             className="filter-select"
           >
@@ -1938,7 +1937,7 @@ const GateSystem = () => {
                 {event.statusName || '未知状态'}
               </div>
             </div>
-
+            
             <div className="event-details">
               <div className="detail-row">
                 <span>站点</span>
@@ -2226,8 +2225,8 @@ const GateSystem = () => {
                   <label>设备名称 *</label>
                   <input
                     type="text"
-                    value={gateFormData.deviceName || ''}
-                    onChange={(e) => setGateFormData({...gateFormData, deviceName: e.target.value})}
+                    value={gateFormData.device_name || ''}
+                    onChange={(e) => setGateFormData({...gateFormData, device_name: e.target.value})}
                     placeholder="请输入设备名称"
                   />
                 </div>
@@ -2235,16 +2234,16 @@ const GateSystem = () => {
                   <label>设备代码 *</label>
                   <input
                     type="text"
-                    value={gateFormData.deviceCode || ''}
-                    onChange={(e) => setGateFormData({...gateFormData, deviceCode: e.target.value})}
+                    value={gateFormData.device_code || ''}
+                    onChange={(e) => setGateFormData({...gateFormData, device_code: e.target.value})}
                     placeholder="请输入设备代码"
                   />
                 </div>
                 <div className="form-group">
                   <label>设备类型</label>
                   <select
-                    value={gateFormData.deviceType || 'BOTH'}
-                    onChange={(e) => setGateFormData({...gateFormData, deviceType: e.target.value})}
+                    value={gateFormData.device_type || 'BOTH'}
+                    onChange={(e) => setGateFormData({...gateFormData, device_type: e.target.value})}
                   >
                     <option value="ENTRY">进站闸机</option>
                     <option value="EXIT">出站闸机</option>
@@ -2254,12 +2253,12 @@ const GateSystem = () => {
                 <div className="form-group">
                   <label>所属站点 *</label>
                   <select
-                    value={gateFormData.siteId || ''}
-                    onChange={(e) => setGateFormData({...gateFormData, siteId: e.target.value})}
+                    value={gateFormData.site_id || ''}
+                    onChange={(e) => setGateFormData({...gateFormData, site_id: e.target.value})}
                   >
                     <option value="">请选择站点</option>
-                    {sites.map((site: Site) => (
-                      <option key={site.siteId} value={site.siteId}>{site.siteName}</option>
+                    {sites.map((site: any) => (
+                      <option key={site.site_id || site.id} value={site.site_id || site.id}>{site.site_name}</option>
                     ))}
                   </select>
                 </div>
@@ -2267,8 +2266,8 @@ const GateSystem = () => {
                   <label>固件版本</label>
                   <input
                     type="text"
-                    value={gateFormData.firmwareVersion || ''}
-                    onChange={(e) => setGateFormData({...gateFormData, firmwareVersion: e.target.value})}
+                    value={gateFormData.firmware_version || ''}
+                    onChange={(e) => setGateFormData({...gateFormData, firmware_version: e.target.value})}
                     placeholder="请输入固件版本"
                   />
                 </div>
@@ -2276,8 +2275,8 @@ const GateSystem = () => {
                   <label>IP地址</label>
                   <input
                     type="text"
-                    value={gateFormData.ipAddress || ''}
-                    onChange={(e) => setGateFormData({...gateFormData, ipAddress: e.target.value})}
+                    value={gateFormData.ip_address || ''}
+                    onChange={(e) => setGateFormData({...gateFormData, ip_address: e.target.value})}
                     placeholder="请输入IP地址"
                   />
                 </div>
@@ -2285,8 +2284,8 @@ const GateSystem = () => {
                   <label>MAC地址</label>
                   <input
                     type="text"
-                    value={gateFormData.macAddress || ''}
-                    onChange={(e) => setGateFormData({...gateFormData, macAddress: e.target.value})}
+                    value={gateFormData.mac_address || ''}
+                    onChange={(e) => setGateFormData({...gateFormData, mac_address: e.target.value})}
                     placeholder="请输入MAC地址"
                   />
                 </div>
@@ -2411,8 +2410,8 @@ const GateSystem = () => {
                   <label>站点名称 *</label>
                   <input
                     type="text"
-                    value={siteFormData.siteName || ''}
-                    onChange={(e) => setSiteFormData({...siteFormData, siteName: e.target.value})}
+                    value={siteFormData.site_name || ''}
+                    onChange={(e) => setSiteFormData({...siteFormData, site_name: e.target.value})}
                     placeholder="请输入站点名称"
                   />
                 </div>
@@ -2420,8 +2419,8 @@ const GateSystem = () => {
                   <label>站点代码 *</label>
                   <input
                     type="text"
-                    value={siteFormData.siteCode || ''}
-                    onChange={(e) => setSiteFormData({...siteFormData, siteCode: e.target.value})}
+                    value={siteFormData.site_code || ''}
+                    onChange={(e) => setSiteFormData({...siteFormData, site_code: e.target.value})}
                     placeholder="请输入站点代码"
                   />
                 </div>
@@ -2429,8 +2428,8 @@ const GateSystem = () => {
                   <label>站点地址</label>
                   <input
                     type="text"
-                    value={siteFormData.siteAddress || ''}
-                    onChange={(e) => setSiteFormData({...siteFormData, siteAddress: e.target.value})}
+                    value={siteFormData.site_address || ''}
+                    onChange={(e) => setSiteFormData({...siteFormData, site_address: e.target.value})}
                     placeholder="请输入站点地址"
                   />
                 </div>
@@ -2438,8 +2437,8 @@ const GateSystem = () => {
                   <label>联系人</label>
                   <input
                     type="text"
-                    value={siteFormData.contactPerson || ''}
-                    onChange={(e) => setSiteFormData({...siteFormData, contactPerson: e.target.value})}
+                    value={siteFormData.contact_person || ''}
+                    onChange={(e) => setSiteFormData({...siteFormData, contact_person: e.target.value})}
                     placeholder="请输入联系人姓名"
                   />
                 </div>
@@ -2447,20 +2446,20 @@ const GateSystem = () => {
                   <label>联系电话 <span style={{color: '#dc3545'}}>*</span></label>
                   <input
                     type="tel"
-                    value={siteFormData.contactPhone || ''}
+                    value={siteFormData.contact_phone || ''}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, '') // 只允许数字
                       if (value.length <= 11) { // 限制最大长度为11位
-                        setSiteFormData({...siteFormData, contactPhone: value})
+                        setSiteFormData({...siteFormData, contact_phone: value})
                       }
                     }}
                     placeholder="请输入11位手机号码"
                     maxLength={11}
                     style={{
-                      borderColor: siteFormData.contactPhone && !validatePhoneNumber(siteFormData.contactPhone) ? '#dc3545' : '#ddd'
+                      borderColor: siteFormData.contact_phone && !validatePhoneNumber(siteFormData.contact_phone) ? '#dc3545' : '#ddd'
                     }}
                   />
-                  {siteFormData.contactPhone && !validatePhoneNumber(siteFormData.contactPhone) && (
+                  {siteFormData.contact_phone && !validatePhoneNumber(siteFormData.contact_phone) && (
                     <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '4px' }}>
                       请输入正确的手机号码（11位数字，以1开头）
                     </div>
@@ -2469,8 +2468,8 @@ const GateSystem = () => {
                 <div className="form-group">
                   <label>站点类型</label>
                   <select
-                    value={siteFormData.siteType || 'BRANCH'}
-                    onChange={(e) => setSiteFormData({...siteFormData, siteType: e.target.value as 'BRANCH' | 'HQ' | 'TERMINAL' | 'STATION' | 'DEPOT' | 'OFFICE'})}
+                    value={siteFormData.site_type || 'BRANCH'}
+                    onChange={(e) => setSiteFormData({...siteFormData, site_type: e.target.value as 'BRANCH' | 'HQ' | 'TERMINAL' | 'STATION' | 'DEPOT' | 'OFFICE'})}
                   >
                     <option value="BRANCH">分支</option>
                     <option value="HQ">总部</option>
@@ -2493,8 +2492,8 @@ const GateSystem = () => {
                   <label>线路名称</label>
                   <input
                     type="text"
-                    value={siteFormData.lineName || ''}
-                    onChange={(e) => setSiteFormData({...siteFormData, lineName: e.target.value})}
+                    value={siteFormData.line_name || ''}
+                    onChange={(e) => setSiteFormData({...siteFormData, line_name: e.target.value})}
                     placeholder="请输入线路名称"
                   />
                 </div>
@@ -2522,16 +2521,16 @@ const GateSystem = () => {
                   <label>营业开始时间</label>
                   <input
                     type="time"
-                    value={siteFormData.businessStartTime || '05:30'}
-                    onChange={(e) => setSiteFormData({...siteFormData, businessStartTime: e.target.value})}
+                    value={siteFormData.business_start_time || '05:30'}
+                    onChange={(e) => setSiteFormData({...siteFormData, business_start_time: e.target.value})}
                   />
                 </div>
                 <div className="form-group">
                   <label>营业结束时间</label>
                   <input
                     type="time"
-                    value={siteFormData.businessEndTime || '23:00'}
-                    onChange={(e) => setSiteFormData({...siteFormData, businessEndTime: e.target.value})}
+                    value={siteFormData.business_end_time || '23:00'}
+                    onChange={(e) => setSiteFormData({...siteFormData, business_end_time: e.target.value})}
                   />
                 </div>
                 <div className="form-group full-width">

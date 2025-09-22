@@ -39,7 +39,7 @@
 .stat-icon {
   font-size: 2.5rem;
   padding: 1rem;
-  background: #3498db;
+  background: white;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -230,9 +230,10 @@
 
 .payment-distribution {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 200px;
+  justify-content: center;
+  height: 220px;
 }
 
 .pie-chart {
@@ -240,14 +241,36 @@
   height: 150px;
   border-radius: 50%;
   background: conic-gradient(
-    #1677ff 0deg 162deg,
-    #07c160 162deg 288deg,
-    #8a2be2 288deg 360deg
+    #07c160 0deg 216deg,
+    #1677ff 216deg 360deg
   );
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 18px;
+}
+.pie-labels {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 4px;
+}
+
+.pie-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1677ff;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 4px 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.pie-label.balance {
+  color: #07c160;
+}
+.pie-label.bank {
+  color: #1677ff;
 }
 
 .pie-chart::after {

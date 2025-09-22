@@ -183,13 +183,10 @@ const Dashboard = () => {
             <Card variant="chart" className="chart-card">
               <h3>支付方式分布</h3>
               <div className="payment-distribution">
-                <div className="pie-chart">
-                  <div className="pie-segment balance" style={{transform: 'rotate(0deg)'}}>
-                    <span>余额支付 60%</span>
-                  </div>
-                  <div className="pie-segment bank" style={{transform: 'rotate(216deg)'}}>
-                    <span>银行卡支付 40%</span>
-                  </div>
+                <div className="pie-chart"></div>
+                <div className="pie-labels">
+                  <span className="pie-label balance">余额支付 60%</span>
+                  <span className="pie-label bank">银行卡支付 40%</span>
                 </div>
               </div>
             </Card>

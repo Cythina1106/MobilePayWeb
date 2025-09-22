@@ -124,7 +124,7 @@ const TransactionList = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <span className="search-icon">🔍</span>
+            <span className="search-icon"></span>
           </div>
 
           <select
@@ -152,7 +152,7 @@ const TransactionList = () => {
         </div>
 
         <button className="export-btn" onClick={handleExport}>
-          📊 导出报表
+            导出报表
         </button>
       </div>
 

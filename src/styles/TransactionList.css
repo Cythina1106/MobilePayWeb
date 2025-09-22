@@ -159,7 +159,7 @@
 .order-id {
   color: #3498db;
   font-weight: 500;
-  font-family: monospace;
+  font-family: 'Arial', 'Microsoft YaHei', 'Helvetica', sans-serif;
 }
 
 .amount {
