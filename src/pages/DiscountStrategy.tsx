@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useApi } from '../hooks/useApi.ts'
 import { discountApi } from '../services/api.ts'
 import Card from '../components/Common/Card.tsx'
@@ -103,6 +103,12 @@ interface DiscountCategory {
 
 const DiscountStrategy = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'create' | 'analytics'>('list')
+  const [queryPageNum, setQueryPageNum] = useState(1)
+  const [queryPageSize, setQueryPageSize] = useState(10)
+  const [queryKeyword, setQueryKeyword] = useState('')
+  const [queryStatus, setQueryStatus] = useState<string | undefined>(undefined)
+  const [queryStrategyType, setQueryStrategyType] = useState<string | undefined>(undefined)
+  const [queryDiscountType, setQueryDiscountType] = useState<string | undefined>(undefined)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [showRuleModal, setShowRuleModal] = useState(false)
   const [editingRule, setEditingRule] = useState<DiscountRule | null>(null)
@@ -123,16 +129,17 @@ const DiscountStrategy = () => {
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>([])
   const [showBatchActions, setShowBatchActions] = useState(false)
 
-  // 新增：折扣策略查询状态
-  const [queryParams, setQueryParams] = useState<DiscountStrategyQuery>({
-    pageNum: 1,
-    pageSize: 10,
-    keyword: '',
-    status: undefined,
-    strategyType: undefined,
-    discountType: undefined
-    // targetCity 不设置默认值，让用户自己选择是否筛选城市
-  })
+  // 使用useMemo缓存查询参数对象，防止每次渲染都创建新对象
+  // 添加targetCity以确保所有查询参数一致
+  const queryParams = useMemo(() => ({
+    pageNum: queryPageNum,
+    pageSize: queryPageSize,
+    keyword: queryKeyword,
+    status: queryStatus,
+    strategyType: queryStrategyType,
+    discountType: queryDiscountType,
+    targetCity: selectedCity // 添加目标城市参数
+  }), [queryPageNum, queryPageSize, queryKeyword, queryStatus, queryStrategyType, queryDiscountType, selectedCity])
 
   // 分页状态
   const [currentPage, setCurrentPage] = useState(1)
@@ -259,27 +266,38 @@ const DiscountStrategy = () => {
     }
   }
 
-  // 初始化加载折扣策略数据
-  useEffect(() => {
-    console.log('折扣策略管理页面初始化')
+  // 添加一个标记来跟踪是否是首次加载，避免初始化时的重复请求
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const [initializationComplete, setInitializationComplete] = useState(false)
 
-    // 首先设置备用城市数据，确保界面立即可用
+  // 初始化城市数据
+  useEffect(() => {
     if (cities.length === 0) {
       setCities(fallbackCities)
       setSelectedCity(fallbackCities[0].cityCode)
     }
-
-    // 直接加载折扣策略数据，不调用site接口
-    const initialQuery = {
-      pageNum: 1,
-      pageSize: 10,
-      // targetCity: fallbackCities[0].cityCode
+    // 当城市数据设置完成后，标记初始化阶段完成
+    if (cities.length > 0 && selectedCity) {
+      setInitializationComplete(true)
     }
-    setQueryParams(initialQuery)
-    fetchStrategies(initialQuery)
-  }, [])
+  }, [cities.length, selectedCity])
 
-  // 移除城市数据处理逻辑，直接使用备用数据
+  // 合并初始化和参数变化的逻辑，确保只执行一次请求
+  useEffect(() => {
+    // 只在activeTab为list且queryParams存在时执行
+    if (activeTab === 'list' && queryParams) {
+      // 如果是初始化阶段，先标记isFirstLoad为false，然后执行请求
+      if (initializationComplete && isFirstLoad) {
+        console.log('折扣策略管理页面初始化 - 执行首次数据加载')
+        setIsFirstLoad(false) // 先标记为非首次加载
+        fetchStrategies(queryParams)
+      }
+      // 非初始化阶段，但初始化已完成，且不是首次加载时执行
+      else if (!isFirstLoad && initializationComplete) {
+        fetchStrategies(queryParams)
+      }
+    }
+  }, [initializationComplete, isFirstLoad, activeTab, queryParams])
 
   // 在切换到分析页面时获取统计数据
   useEffect(() => {
@@ -296,26 +314,15 @@ const DiscountStrategy = () => {
     }
   }, [dateRange, selectedStrategyType])
 
-  // 当选择城市时，更新查询参数并加载策略（可选传递城市参数）
+  // 已在上面的useEffect中处理了queryParams变化的逻辑，此处不再重复
+
+  // 当选择城市时，重置页码
   useEffect(() => {
     if (selectedCity) {
-      const newQueryParams = {
-        ...queryParams,
-        // 可以选择是否传递城市参数，这里注释掉默认不传递
-        // targetCity: selectedCity,
-        pageNum: 1 // 重置到第一页
-      }
-      setQueryParams(newQueryParams)
+      setQueryPageNum(1)
       setCurrentPage(1)
-      fetchStrategies(newQueryParams)
     }
   }, [selectedCity])
-
-  // 当查询参数变化时，重新加载数据（不依赖城市参数）
-  useEffect(() => {
-    // 移除城市参数依赖，直接加载数据
-    fetchStrategies(queryParams)
-  }, [queryParams])
 
   // 处理策略数据加载
   useEffect(() => {
@@ -343,20 +350,22 @@ const DiscountStrategy = () => {
 
   // 处理查询参数更新
   const updateQueryParams = (updates: Partial<DiscountStrategyQuery>) => {
-    const newParams = { ...queryParams, ...updates, pageNum: 1 }
-    setQueryParams(newParams)
+    if (updates.keyword !== undefined) setQueryKeyword(updates.keyword)
+    if (updates.status !== undefined) setQueryStatus(updates.status)
+    if (updates.strategyType !== undefined) setQueryStrategyType(updates.strategyType)
+    if (updates.discountType !== undefined) setQueryDiscountType(updates.discountType)
+    setQueryPageNum(1)
   }
 
   // 处理分页变化
   const handlePageChange = (page: number) => {
-    const newParams = { ...queryParams, pageNum: page }
-    setQueryParams(newParams)
+    setQueryPageNum(page)
   }
 
   // 处理页面大小变化
   const handlePageSizeChange = (size: number) => {
-    const newParams = { ...queryParams, pageSize: size, pageNum: 1 }
-    setQueryParams(newParams)
+    setQueryPageSize(size)
+    setQueryPageNum(1)
   }
 
   // 编辑策略 - 先调用详情接口获取完整数据
@@ -418,11 +427,8 @@ const DiscountStrategy = () => {
         alert('启用策略成功')
       }
 
-      // 重新获取策略列表
-      if (selectedCity) {
-        const refreshParams = { ...queryParams, targetCity: selectedCity }
-        fetchStrategies(refreshParams)
-      }
+      // 重新获取策略列表 - 现在queryParams已经包含了targetCity
+      fetchStrategies(queryParams)
     } catch (error) {
       console.error('更新策略状态失败:', error)
       alert('更新策略状态失败')
@@ -435,11 +441,8 @@ const DiscountStrategy = () => {
       console.log('启用策略，ID:', strategyId)
       await discountApi.enableStrategy(String(strategyId))
 
-      // 重新获取策略列表
-      if (selectedCity) {
-        const refreshParams = { ...queryParams, targetCity: selectedCity }
-        fetchStrategies(refreshParams)
-      }
+      // 重新获取策略列表 - 现在queryParams已经包含了targetCity
+      fetchStrategies(queryParams)
 
       alert('启用策略成功')
     } catch (error) {
@@ -454,11 +457,8 @@ const DiscountStrategy = () => {
       console.log('禁用策略，ID:', strategyId)
       await discountApi.disableStrategy(String(strategyId))
 
-      // 重新获取策略列表
-      if (selectedCity) {
-        const refreshParams = { ...queryParams, targetCity: selectedCity }
-        fetchStrategies(refreshParams)
-      }
+      // 重新获取策略列表 - 现在queryParams已经包含了targetCity
+      fetchStrategies(queryParams)
 
       alert('禁用策略成功')
     } catch (error) {
@@ -474,11 +474,8 @@ const DiscountStrategy = () => {
         console.log('删除策略，ID:', strategyId)
         await discountApi.deleteStrategy(String(strategyId))
 
-        // 重新获取策略列表
-        if (selectedCity) {
-          const refreshParams = { ...queryParams, targetCity: selectedCity }
-          fetchStrategies(refreshParams)
-        }
+        // 重新获取策略列表 - 现在queryParams已经包含了targetCity
+        fetchStrategies(queryParams)
 
         alert('删除策略成功')
       } catch (error) {
@@ -507,11 +504,8 @@ const DiscountStrategy = () => {
         setSelectedStrategies([])
         setShowBatchActions(false)
 
-        // 重新获取策略列表
-        if (selectedCity) {
-          const refreshParams = { ...queryParams, targetCity: selectedCity }
-          fetchStrategies(refreshParams)
-        }
+        // 重新获取策略列表 - 现在queryParams已经包含了targetCity
+        fetchStrategies(queryParams)
 
         alert(`批量${statusText}策略成功`)
       } catch (error) {
@@ -731,11 +725,8 @@ const DiscountStrategy = () => {
         alert('创建策略成功')
       }
 
-      // 重新获取策略列表
-      if (selectedCity) {
-        const refreshParams = { ...queryParams, targetCity: selectedCity }
-        fetchStrategies(refreshParams)
-      }
+      // 重新获取策略列表 - 现在queryParams已经包含了targetCity
+      fetchStrategies(queryParams)
 
       setShowRuleModal(false)
       setEditingRule(null)

@@ -14,8 +14,8 @@ const DeviceManagement: React.FC = () => {
 
   // 获取设备列表
   const fetchDevices = async () => {
+    setLoading(true)
     try {
-      setLoading(true)
       const response = await deviceApi.getDevices(query)
       if (response.success) {
         setDevices(response.data.list)
@@ -27,7 +27,6 @@ const DeviceManagement: React.FC = () => {
       setLoading(false)
     }
   }
-
   // 获取站点列表
   const fetchSites = async () => {
     try {
@@ -56,8 +55,7 @@ const DeviceManagement: React.FC = () => {
   const handleSearch = (keyword: string) => {
     setQuery(prev => ({
       ...prev,
-      keyword,
-      pageNum: 1
+      keyword
     }))
   }
 
@@ -67,8 +65,7 @@ const DeviceManagement: React.FC = () => {
       siteId: siteId || undefined,
       pageNum: 1
     }))
-  }
-
+  
   const handleStatusFilter = (status: string) => {
     setQuery(prev => ({
       ...prev,
@@ -82,7 +79,6 @@ const DeviceManagement: React.FC = () => {
       case 'online': return '在线'
       case 'offline': return '离线'
       case 'maintenance': return '维护中'
-      case 'error': return '错误'
       default: return status
     }
   }
@@ -114,7 +110,7 @@ const DeviceManagement: React.FC = () => {
                 type="text"
                 placeholder="设备名称、编码或描述"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
               />
             </div>
 
@@ -125,7 +121,7 @@ const DeviceManagement: React.FC = () => {
               </label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                onChange={(e) => handleSiteFilter(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleSiteFilter(e.target.value)}
               >
                 <option value="">所有站点</option>
                 {sites.map(site => (
@@ -141,7 +137,7 @@ const DeviceManagement: React.FC = () => {
               </label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                onChange={(e) => handleStatusFilter(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleStatusFilter(e.target.value)}
               >
                 <option value="">所有状态</option>
                 <option value="online">在线</option>
